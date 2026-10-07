@@ -1,0 +1,71 @@
+{
+  "schools": [
+    {
+      "id": "1",
+      "name": "Escola Municipal Monteiro Lobato",
+      "address": "Rua das Flores, 120 - Centro"
+    },
+    {
+      "id": "2",
+      "name": "Colégio Estadual Machado de Assis",
+      "address": "Av. Brasil, 1500 - Jardim América"
+    },
+    {
+      "name": "Educacao do Saber",
+      "address": "Rua nove 09 - centro - Cidade",
+      "id": "CEVCxHk1kl4"
+    }
+  ],
+  "classes": [
+    {
+      "id": "1",
+      "schoolId": "1",
+      "name": "1º Ano A",
+      "shift": "morning",
+      "year": 2026
+    },
+    {
+      "id": "2",
+      "schoolId": "1",
+      "name": "2º Ano B",
+      "shift": "afternoon",
+      "year": 2026
+    },
+    {
+      "id": "3",
+      "schoolId": "2",
+      "name": "9º Ano A",
+      "shift": "morning",
+      "year": 2026
+    },
+    {
+      "name": "Primeiro Ano A",
+      "shift": "morning",
+      "year": 2026,
+      "schoolId": "CEVCxHk1kl4",
+      "id": "e15vjIMvcKs"
+    },
+    {
+      "name": "Segundo Ano A",
+      "shift": "morning",
+      "year": 2026,
+      "schoolId": "CEVCxHk1kl4",
+      "id": "gPwGRS2n2qQ"
+    },
+    {
+      "name": "Terceiro Ano 1",
+      "shift": "afternoon",
+      "year": 2026,
+      "schoolId": "CEVCxHk1kl4",
+      "id": "7YQnnuY3Fk8"
+    },
+    {
+      "name": "Quarto Ano 1",
+      "shift": "afternoon",
+      "year": 2026,
+      "schoolId": "CEVCxHk1kl4",
+      "id": "gLb-NXcf0DQ"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

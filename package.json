@@ -36,6 +36,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/react": "~19.2.2",
+    "json-server": "^1.0.0-beta.15",
     "postcss": "^8.5.29",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3"
@@ -46,7 +47,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "api": "json-server --host 0.0.0.0 --port 3000 api/db.json"
   },
   "private": true,
   "resolutions": {
