@@ -7,7 +7,7 @@ import { ConfirmDialog } from '@/components/confirm-dialog';
 import { Button, ButtonText } from '@/components/ui/button';
 import { BottomTabInset } from '@/constants/theme';
 import { deleteClass, listClasses } from '@/features/classes/api';
-import { ClassCard } from '@/features/classes/class-card';
+import { ClassCard } from '@/features/classes/components/class-card';
 import type { SchoolClassWithSchool } from '@/features/classes/types';
 
 export default function ClassesScreen() {

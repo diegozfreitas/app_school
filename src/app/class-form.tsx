@@ -1,4 +1,4 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native';
 
@@ -9,6 +9,7 @@ import { createClass, getClass, updateClass } from '@/features/classes/api';
 import { SHIFTS, type Shift } from '@/features/classes/types';
 import { listSchools } from '@/features/schools/api';
 import type { School } from '@/features/schools/types';
+import { goBack } from '@/lib/navigation';
 
 type Field = 'name' | 'shift' | 'year' | 'schoolId';
 type Errors = Partial<Record<Field, string>>;
@@ -75,7 +76,7 @@ export default function ClassFormScreen() {
       } else {
         await createClass(input);
       }
-      router.back();
+      goBack();
     } catch {
       Alert.alert('Erro', 'Não foi possível salvar a classe.');
       setSaving(false);
@@ -136,7 +137,7 @@ export default function ClassFormScreen() {
           )}
 
           <View className="mt-2 flex-row justify-end gap-2">
-            <Button variant="outline" onPress={() => router.back()} isDisabled={saving}>
+            <Button variant="outline" onPress={() => goBack()} isDisabled={saving}>
               <ButtonText>Cancelar</ButtonText>
             </Button>
             <Button onPress={handleSubmit} isDisabled={saving}>

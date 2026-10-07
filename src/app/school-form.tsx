@@ -1,10 +1,11 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 
 import { FormField } from '@/components/form-field';
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
 import { createSchool, getSchool, updateSchool } from '@/features/schools/api';
+import { goBack } from '@/lib/navigation';
 
 type Field = 'name' | 'address';
 type Errors = Partial<Record<Field, string>>;
@@ -49,7 +50,7 @@ export default function SchoolFormScreen() {
       } else {
         await createSchool(input);
       }
-      router.back();
+      goBack();
     } catch {
       Alert.alert('Erro', 'Não foi possível salvar a escola.');
       setSaving(false);
@@ -83,7 +84,7 @@ export default function SchoolFormScreen() {
           />
 
           <View className="mt-2 flex-row justify-end gap-2">
-            <Button variant="outline" onPress={() => router.back()} isDisabled={saving}>
+            <Button variant="outline" onPress={() => goBack()} isDisabled={saving}>
               <ButtonText>Cancelar</ButtonText>
             </Button>
             <Button onPress={handleSubmit} isDisabled={saving}>

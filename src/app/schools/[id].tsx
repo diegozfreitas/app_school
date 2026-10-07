@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { Button, ButtonText } from '@/components/ui/button';
 import { deleteClass, listClassesBySchool } from '@/features/classes/api';
-import { ClassCard } from '@/features/classes/class-card';
+import { ClassCard } from '@/features/classes/components/class-card';
 import type { SchoolClass } from '@/features/classes/types';
 import { getSchool } from '@/features/schools/api';
 import type { School } from '@/features/schools/types';

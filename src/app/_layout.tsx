@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { HeaderBackButton } from '@/components/header-back-button';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 
 SplashScreen.preventAutoHideAsync();
@@ -17,9 +18,10 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <StatusBar style="auto" />
         <AnimatedSplashOverlay />
-        <Stack>
+        {/* Toda tela fora das abas ganha um "Voltar" que funciona mesmo sem histórico. */}
+        <Stack screenOptions={{ headerLeft: () => <HeaderBackButton /> }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="schools/[id]" options={{ title: 'Escola', headerBackTitle: 'Voltar' }} />
+          <Stack.Screen name="schools/[id]" options={{ title: 'Escola' }} />
           <Stack.Screen name="school-form" options={{ presentation: 'modal' }} />
           <Stack.Screen name="class-form" options={{ presentation: 'modal' }} />
         </Stack>

@@ -48,7 +48,7 @@ export function ConfirmDialog({
   return (
     <AlertDialog isOpen={isOpen} onClose={busy ? undefined : onCancel} size="md">
       <AlertDialogBackdrop />
-      <AlertDialogContent className="gap-3">
+      <AlertDialogContent className="gap-3" testID="confirm-dialog">
         <AlertDialogHeader>
           <Text className="text-lg font-semibold text-foreground">{content.title}</Text>
         </AlertDialogHeader>

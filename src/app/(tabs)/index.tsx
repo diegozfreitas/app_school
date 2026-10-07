@@ -1,12 +1,13 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { Button, ButtonText } from '@/components/ui/button';
 import { BottomTabInset } from '@/constants/theme';
 import { deleteSchool, listSchools } from '@/features/schools/api';
+import { SchoolCard } from '@/features/schools/components/school-card';
 import type { SchoolWithClassesCount } from '@/features/schools/types';
 
 export default function SchoolsScreen() {
@@ -74,27 +75,12 @@ export default function SchoolsScreen() {
             </View>
           }
           renderItem={({ item }) => (
-            <Pressable
+            <SchoolCard
+              item={item}
               onPress={() => router.push({ pathname: '/schools/[id]', params: { id: item.id } })}
-              accessibilityRole="button"
-              className="gap-1 rounded-lg border border-border bg-card p-4 active:opacity-70">
-              <Text className="text-base font-semibold text-foreground">{item.name}</Text>
-              <Text className="text-sm text-muted-foreground">{item.address}</Text>
-              <Text className="text-sm text-muted-foreground">
-                {item.classesCount} {item.classesCount === 1 ? 'classe' : 'classes'} ›
-              </Text>
-              <View className="mt-2 flex-row justify-end gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onPress={() => router.push({ pathname: '/school-form', params: { id: item.id } })}>
-                  <ButtonText>Editar</ButtonText>
-                </Button>
-                <Button size="sm" variant="destructive" onPress={() => setSchoolToDelete(item)}>
-                  <ButtonText>Excluir</ButtonText>
-                </Button>
-              </View>
-            </Pressable>
+              onEdit={() => router.push({ pathname: '/school-form', params: { id: item.id } })}
+              onDelete={() => setSchoolToDelete(item)}
+            />
           )}
         />
       )}

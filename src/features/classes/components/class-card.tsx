@@ -2,7 +2,7 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Button, ButtonText } from '@/components/ui/button';
 
-import { shiftLabel, type SchoolClassWithSchool } from './types';
+import { shiftLabel, type SchoolClassWithSchool } from '../types';
 
 type ClassCardProps = {
   item: SchoolClassWithSchool;
