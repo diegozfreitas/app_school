@@ -30,6 +30,36 @@ describe('Tela de Classes', () => {
     expect(await screen.findByText('Nenhuma classe cadastrada')).toBeOnTheScreen();
   });
 
+  it('busca pelo nome da classe ou da escola', async () => {
+    await renderApp('/classes');
+    const search = await screen.findByLabelText('Buscar por classe ou escola');
+
+    await fireEvent.changeText(search, '9º');
+    expect(screen.getByText('9º Ano A')).toBeOnTheScreen();
+    expect(screen.queryByText('1º Ano A')).not.toBeOnTheScreen();
+
+    await fireEvent.changeText(search, 'lobato');
+    expect(screen.getByText('1º Ano A')).toBeOnTheScreen();
+    expect(screen.getByText('2º Ano B')).toBeOnTheScreen();
+    expect(screen.queryByText('9º Ano A')).not.toBeOnTheScreen();
+  });
+
+  it('filtra por turno e volta a mostrar todas em "Todos"', async () => {
+    await renderApp('/classes');
+    await screen.findByText('1º Ano A');
+
+    await fireEvent.press(screen.getByText('Noite'));
+    expect(screen.getByText('9º Ano A')).toBeOnTheScreen();
+    expect(screen.queryByText('1º Ano A')).not.toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByText('Integral'));
+    expect(screen.getByText('Nenhuma classe encontrada com esses filtros')).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByText('Todos'));
+    expect(screen.getByText('1º Ano A')).toBeOnTheScreen();
+    expect(screen.getByText('9º Ano A')).toBeOnTheScreen();
+  });
+
   it('abre a escola da classe ao tocar no nome da escola', async () => {
     const { app } = await renderApp('/classes');
 

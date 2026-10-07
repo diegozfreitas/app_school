@@ -1,20 +1,30 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { FilterChips } from '@/components/filter-chips';
+import { SearchInput } from '@/components/search-input';
+import { TabScreen } from '@/components/tab-screen';
 import { Button, ButtonText } from '@/components/ui/button';
-import { BottomTabInset } from '@/constants/theme';
 import { deleteClass, listClasses } from '@/features/classes/api';
 import { ClassCard } from '@/features/classes/components/class-card';
-import type { SchoolClassWithSchool } from '@/features/classes/types';
+import { SHIFTS, type SchoolClassWithSchool, type Shift } from '@/features/classes/types';
+import { useSearch } from '@/hooks/use-search';
+
+const searchFields = (item: SchoolClassWithSchool) => [item.name, item.school?.name];
 
 export default function ClassesScreen() {
   const [classes, setClasses] = useState<SchoolClassWithSchool[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [classToDelete, setClassToDelete] = useState<SchoolClassWithSchool | null>(null);
+  const [shift, setShift] = useState<Shift | null>(null);
+  const { query, setQuery, results, hasQuery } = useSearch(classes, {
+    fields: searchFields,
+    filter: (item) => shift === null || item.shift === shift,
+  });
+  const isFiltering = hasQuery || shift !== null;
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -47,11 +57,16 @@ export default function ClassesScreen() {
   };
 
   return (
-    <SafeAreaView
-      edges={['top']}
-      className="flex-1 bg-background web:pt-20"
-      style={{ paddingBottom: BottomTabInset }}>
+    <TabScreen>
       <Text className="px-4 pb-2 pt-4 text-2xl font-semibold text-foreground">Classes</Text>
+      <View className="gap-2 px-4 pb-1">
+        <SearchInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Buscar por classe ou escola"
+        />
+        <FilterChips options={SHIFTS} value={shift} onChange={setShift} />
+      </View>
 
       {loading && classes.length === 0 ? (
         <ActivityIndicator className="flex-1" />
@@ -64,14 +79,17 @@ export default function ClassesScreen() {
         </View>
       ) : (
         <FlatList
-          data={classes}
+          data={results}
+          keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id}
           contentContainerClassName="grow gap-3 p-4"
           refreshing={loading}
           onRefresh={load}
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center">
-              <Text className="text-muted-foreground">Nenhuma classe cadastrada</Text>
+              <Text className="text-center text-muted-foreground">
+                {isFiltering ? 'Nenhuma classe encontrada com esses filtros' : 'Nenhuma classe cadastrada'}
+              </Text>
             </View>
           }
           renderItem={({ item }) => (
@@ -100,6 +118,6 @@ export default function ClassesScreen() {
         onCancel={() => setClassToDelete(null)}
         onConfirm={handleDelete}
       />
-    </SafeAreaView>
+    </TabScreen>
   );
 }

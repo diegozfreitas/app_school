@@ -1,20 +1,24 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { SearchInput } from '@/components/search-input';
+import { TabScreen } from '@/components/tab-screen';
 import { Button, ButtonText } from '@/components/ui/button';
-import { BottomTabInset } from '@/constants/theme';
 import { deleteSchool, listSchools } from '@/features/schools/api';
 import { SchoolCard } from '@/features/schools/components/school-card';
 import type { SchoolWithClassesCount } from '@/features/schools/types';
+import { useSearch } from '@/hooks/use-search';
+
+const searchFields = (school: SchoolWithClassesCount) => [school.name, school.address];
 
 export default function SchoolsScreen() {
   const [schools, setSchools] = useState<SchoolWithClassesCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [schoolToDelete, setSchoolToDelete] = useState<SchoolWithClassesCount | null>(null);
+  const { query, setQuery, results, hasQuery } = useSearch(schools, { fields: searchFields });
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -47,11 +51,15 @@ export default function SchoolsScreen() {
   };
 
   return (
-    <SafeAreaView
-      edges={['top']}
-      className="flex-1 bg-background web:pt-20"
-      style={{ paddingBottom: BottomTabInset }}>
+    <TabScreen>
       <Text className="px-4 pb-2 pt-4 text-2xl font-semibold text-foreground">Escolas</Text>
+      <View className="px-4 pb-1">
+        <SearchInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Buscar por nome ou endereço"
+        />
+      </View>
 
       {loading && schools.length === 0 ? (
         <ActivityIndicator className="flex-1" />
@@ -64,14 +72,17 @@ export default function SchoolsScreen() {
         </View>
       ) : (
         <FlatList
-          data={schools}
+          data={results}
+          keyboardShouldPersistTaps="handled"
           keyExtractor={(school) => school.id}
           contentContainerClassName="grow gap-3 p-4"
           refreshing={loading}
           onRefresh={load}
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center">
-              <Text className="text-muted-foreground">Nenhuma escola cadastrada</Text>
+              <Text className="text-center text-muted-foreground">
+                {hasQuery ? `Nenhuma escola encontrada para "${query.trim()}"` : 'Nenhuma escola cadastrada'}
+              </Text>
             </View>
           }
           renderItem={({ item }) => (
@@ -98,6 +109,6 @@ export default function SchoolsScreen() {
         onCancel={() => setSchoolToDelete(null)}
         onConfirm={handleDelete}
       />
-    </SafeAreaView>
+    </TabScreen>
   );
 }

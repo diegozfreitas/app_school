@@ -14,6 +14,10 @@ App mobile (Android, iOS e web) para cadastro de **escolas** e suas **classes**,
   - Listar as classes de uma escola específica
   - Cadastrar classe (nome, turno e ano letivo; a escola vem pré-selecionada quando aberta pela tela da escola)
   - Editar e excluir classe (na edição a escola não pode ser trocada)
+- **Busca e filtro**
+  - Escolas: busca por nome ou endereço
+  - Classes: busca pelo nome da classe ou da escola + filtro por turno
+  - A busca ignora acentos e maiúsculas ("colegio" encontra "Colégio")
 
 ## Versões utilizadas
 

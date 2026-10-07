@@ -30,6 +30,29 @@ describe('Tela de Escolas', () => {
     expect(await screen.findByText('Nenhuma escola cadastrada')).toBeOnTheScreen();
   });
 
+  it('busca por nome ou endereço, sem diferenciar acentos', async () => {
+    await renderApp('/');
+    const search = await screen.findByLabelText('Buscar por nome ou endereço');
+
+    await fireEvent.changeText(search, 'colegio');
+    expect(screen.getByText('Colégio Estadual Machado de Assis')).toBeOnTheScreen();
+    expect(screen.queryByText('Escola Municipal Monteiro Lobato')).not.toBeOnTheScreen();
+
+    await fireEvent.changeText(search, 'rua das flores');
+    expect(screen.getByText('Escola Municipal Monteiro Lobato')).toBeOnTheScreen();
+    expect(screen.queryByText('Colégio Estadual Machado de Assis')).not.toBeOnTheScreen();
+  });
+
+  it('mostra mensagem quando a busca não encontra nada e permite limpar', async () => {
+    await renderApp('/');
+
+    await fireEvent.changeText(await screen.findByLabelText('Buscar por nome ou endereço'), 'xyz');
+    expect(screen.getByText('Nenhuma escola encontrada para "xyz"')).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByLabelText('Limpar busca'));
+    expect(screen.getByText('Escola Municipal Monteiro Lobato')).toBeOnTheScreen();
+  });
+
   it('mostra erro e botão de tentar novamente quando a API falha', async () => {
     api.listSchools.mockRejectedValue(new Error('offline'));
     await renderApp('/');
