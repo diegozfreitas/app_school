@@ -77,4 +77,13 @@ describe('Formulário de classe', () => {
     expect(await screen.findByDisplayValue('1º Ano A')).toBeOnTheScreen();
     expect(screen.getByDisplayValue('2026')).toBeOnTheScreen();
   });
+
+  it('na edição mostra a escola, mas não permite trocar', async () => {
+    classesMock.getClass.mockResolvedValue(classes[0]);
+    await renderApp('/class-form?id=1');
+
+    expect(await screen.findByText('Escola Municipal Monteiro Lobato')).toBeOnTheScreen();
+    expect(screen.queryByText('Colégio Estadual Machado de Assis')).not.toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'Escola Municipal Monteiro Lobato' })).not.toBeOnTheScreen();
+  });
 });

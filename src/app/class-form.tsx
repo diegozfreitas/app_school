@@ -121,7 +121,15 @@ export default function ClassFormScreen() {
             keyboardType="number-pad"
             maxLength={4}
           />
-          {schoolOptions.length > 0 ? (
+          {isEditing ? (
+            // Na edição a escola não muda: só mostra a qual escola a classe pertence.
+            <View className="gap-1.5">
+              <Text className="text-sm font-medium text-foreground">Escola</Text>
+              <Text className="text-base text-muted-foreground">
+                {schools.find((school) => school.id === schoolId)?.name ?? '—'}
+              </Text>
+            </View>
+          ) : schoolOptions.length > 0 ? (
             <OptionPicker
               label="Escola"
               options={schoolOptions}
