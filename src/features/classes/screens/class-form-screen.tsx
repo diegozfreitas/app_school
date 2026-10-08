@@ -1,6 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 
 import { LoadingState } from '@/components/loading-state';
+import { PageTitle } from '@/components/page-title';
 import { StackScreen } from '@/components/stack-screen';
 import { goBack } from '@/lib/navigation';
 
@@ -15,6 +16,7 @@ export function ClassFormScreen() {
   return (
     <StackScreen>
       <Stack.Screen options={{ title: form.isEditing ? 'Editar classe' : 'Nova classe' }} />
+      <PageTitle title={form.isEditing ? 'Editar classe' : 'Nova classe'} />
       {form.loading ? <LoadingState /> : <ClassForm form={form} onCancel={() => goBack()} />}
     </StackScreen>
   );

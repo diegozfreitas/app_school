@@ -1,6 +1,7 @@
 import '@/global.css';
 
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import Head from 'expo-router/head';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 
@@ -16,6 +17,10 @@ export default function RootLayout() {
       <GluestackUIProvider mode="system">
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <StatusBar style="auto" />
+          {/* Título padrão da aba do navegador; cada tela troca pelo seu (PageTitle). */}
+          <Head>
+            <title>AppSchool</title>
+          </Head>
           <SplashScreenController />
           <RootNavigator />
         </ThemeProvider>

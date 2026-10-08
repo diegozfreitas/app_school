@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 
 import { FooterAction } from '@/components/footer-action';
+import { PageTitle } from '@/components/page-title';
 import { ScreenHeader } from '@/components/screen-header';
 import { TabScreen } from '@/components/tab-screen';
 import { ManagerMenu } from '@/features/session/components/manager-menu';
@@ -17,6 +18,7 @@ export function ClassesScreen() {
 
   return (
     <TabScreen>
+      <PageTitle title="Classes" />
       <ScreenHeader title="Classes" action={<ManagerMenu />}>
         <ClassFilters {...filters} />
       </ScreenHeader>

@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 
 import { FooterAction } from '@/components/footer-action';
+import { PageTitle } from '@/components/page-title';
 import { ScreenHeader } from '@/components/screen-header';
 import { SearchInput } from '@/components/search-input';
 import { TabScreen } from '@/components/tab-screen';
@@ -17,6 +18,7 @@ export function SchoolsScreen() {
 
   return (
     <TabScreen>
+      <PageTitle title="Escolas" />
       <ScreenHeader title="Escolas" action={<ManagerMenu />}>
         <SearchInput
           value={search.query}

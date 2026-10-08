@@ -15,11 +15,19 @@ const Root = withStyleContext(Pressable, SCOPE);
 const StyledUIIcon = styled(UIIcon, {
   className: "style",
 });
+// O ButtonSpinner do gluestack fixa aria-label="loading" (em inglês) depois das props;
+// este wrapper troca pelo texto em português lido pelos leitores de tela.
+const ButtonActivityIndicator = React.forwardRef<
+  React.ComponentRef<typeof ActivityIndicator>,
+  React.ComponentProps<typeof ActivityIndicator>
+>(function ButtonActivityIndicator(props, ref) {
+  return <ActivityIndicator {...props} ref={ref} aria-label="Carregando" />;
+});
 const UIButton = createButton({
   Root: Root,
   Text,
   Group: View,
-  Spinner: ActivityIndicator,
+  Spinner: ButtonActivityIndicator,
   Icon: StyledUIIcon,
 });
 const buttonStyle = tva({

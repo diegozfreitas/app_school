@@ -1,6 +1,7 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 
 import { FooterAction } from '@/components/footer-action';
+import { PageTitle } from '@/components/page-title';
 import { StackScreen } from '@/components/stack-screen';
 import { ClassList } from '@/features/classes/components/class-list';
 import { DeleteClassDialog } from '@/features/classes/components/delete-class-dialog';
@@ -17,6 +18,7 @@ export function SchoolDetailsScreen() {
   return (
     <StackScreen>
       <Stack.Screen options={{ title: school?.name ?? 'Escola' }} />
+      <PageTitle title={school?.name ?? 'Escola'} />
 
       <ClassList
         classes={classes}
