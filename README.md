@@ -1,4 +1,4 @@
-# AppSchool
+# App School
 
 App mobile (Android, iOS e web) para cadastro de **escolas** e suas **classes**, feito com Expo, Expo Router e gluestack-ui. Os dados ficam em um back-end mock (`json-server`) servido a partir de um arquivo JSON.
 

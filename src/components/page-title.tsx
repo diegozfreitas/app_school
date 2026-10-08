@@ -5,7 +5,7 @@ import Head from 'expo-router/head';
 export function PageTitle({ title }: { title: string }) {
   return (
     <Head>
-      <title>{`${title} · AppSchool`}</title>
+      <title>{`${title} · App School`}</title>
     </Head>
   );
 }

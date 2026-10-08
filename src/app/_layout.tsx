@@ -19,7 +19,7 @@ export default function RootLayout() {
           <StatusBar style="auto" />
           {/* Título padrão da aba do navegador; cada tela troca pelo seu (PageTitle). */}
           <Head>
-            <title>AppSchool</title>
+            <title>App School</title>
           </Head>
           <SplashScreenController />
           <RootNavigator />

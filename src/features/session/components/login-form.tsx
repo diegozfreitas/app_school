@@ -13,7 +13,7 @@ export function LoginForm({ onSignedIn }: { onSignedIn: () => void }) {
   return (
     <VStack className="w-full max-w-100 gap-6">
       <VStack className="gap-1">
-        <Heading size="3xl">AppSchool</Heading>
+        <Heading size="3xl">App School</Heading>
         <Text className="text-muted-foreground">
           Cadastro das escolas públicas e suas classes. Para começar, diga quem está gerenciando.
         </Text>
