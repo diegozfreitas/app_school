@@ -1,14 +1,22 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { SearchInput } from '@/components/search-input';
 import { TabScreen } from '@/components/tab-screen';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Box } from '@/components/ui/box';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
+import { Center } from '@/components/ui/center';
+import { FlatList } from '@/components/ui/flat-list';
+import { Heading } from '@/components/ui/heading';
+import { AddIcon } from '@/components/ui/icon';
+import { Spinner } from '@/components/ui/spinner';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
 import { deleteSchool, listSchools } from '@/features/schools/api';
 import { SchoolCard } from '@/features/schools/components/school-card';
 import type { SchoolWithClassesCount } from '@/features/schools/types';
+import { useErrorToast } from '@/hooks/use-error-toast';
 import { useSearch } from '@/hooks/use-search';
 import { writeErrorMessage } from '@/lib/api-client';
 
@@ -20,6 +28,7 @@ export default function SchoolsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [schoolToDelete, setSchoolToDelete] = useState<SchoolWithClassesCount | null>(null);
   const { query, setQuery, results, hasQuery } = useSearch(schools, { fields: searchFields });
+  const showError = useErrorToast();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -47,30 +56,28 @@ export default function SchoolsScreen() {
       setSchools((current) => current.filter((item) => item.id !== schoolToDelete.id));
       setSchoolToDelete(null);
     } catch (error) {
-      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível excluir a escola.'));
+      showError(writeErrorMessage(error, 'Não foi possível excluir a escola.'));
     }
   };
 
   return (
     <TabScreen>
-      <Text className="px-4 pb-2 pt-4 text-2xl font-semibold text-foreground">Escolas</Text>
-      <View className="px-4 pb-1">
-        <SearchInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Buscar por nome ou endereço"
-        />
-      </View>
+      <VStack className="gap-2 px-4 pb-1 pt-4">
+        <Heading size="2xl">Escolas</Heading>
+        <SearchInput value={query} onChangeText={setQuery} placeholder="Buscar por nome ou endereço" />
+      </VStack>
 
       {loading && schools.length === 0 ? (
-        <ActivityIndicator className="flex-1" />
+        <Center className="flex-1">
+          <Spinner size="large" />
+        </Center>
       ) : error ? (
-        <View className="flex-1 items-center justify-center gap-4 px-6">
+        <Center className="flex-1 gap-4 px-6">
           <Text className="text-center text-muted-foreground">{error}</Text>
           <Button variant="outline" onPress={load}>
             <ButtonText>Tentar novamente</ButtonText>
           </Button>
-        </View>
+        </Center>
       ) : (
         <FlatList
           data={results}
@@ -80,11 +87,11 @@ export default function SchoolsScreen() {
           refreshing={loading}
           onRefresh={load}
           ListEmptyComponent={
-            <View className="flex-1 items-center justify-center">
+            <Center className="flex-1">
               <Text className="text-center text-muted-foreground">
                 {hasQuery ? `Nenhuma escola encontrada para "${query.trim()}"` : 'Nenhuma escola cadastrada'}
               </Text>
-            </View>
+            </Center>
           }
           renderItem={({ item }) => (
             <SchoolCard
@@ -97,11 +104,12 @@ export default function SchoolsScreen() {
         />
       )}
 
-      <View className="border-t border-border p-4">
+      <Box className="border-t border-border p-4">
         <Button size="lg" onPress={() => router.push('/school-form')}>
+          <ButtonIcon as={AddIcon} />
           <ButtonText>Adicionar nova escola</ButtonText>
         </Button>
-      </View>
+      </Box>
 
       <ConfirmDialog
         isOpen={schoolToDelete !== null}

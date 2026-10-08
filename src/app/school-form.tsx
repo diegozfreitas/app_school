@@ -1,11 +1,16 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 
 import { FormField } from '@/components/form-field';
+import { Box } from '@/components/ui/box';
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
-import { createSchool, getSchool, updateSchool } from '@/features/schools/api';
+import { Center } from '@/components/ui/center';
+import { HStack } from '@/components/ui/hstack';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Spinner } from '@/components/ui/spinner';
 import { OfflineBanner } from '@/features/offline/components/offline-banner';
+import { createSchool, getSchool, updateSchool } from '@/features/schools/api';
+import { useErrorToast } from '@/hooks/use-error-toast';
 import { writeErrorMessage } from '@/lib/api-client';
 import { goBack } from '@/lib/navigation';
 
@@ -21,6 +26,7 @@ export default function SchoolFormScreen() {
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
+  const showError = useErrorToast();
 
   useEffect(() => {
     if (!id) return;
@@ -29,9 +35,9 @@ export default function SchoolFormScreen() {
         setName(school.name);
         setAddress(school.address);
       })
-      .catch(() => Alert.alert('Erro', 'Não foi possível carregar a escola.'))
+      .catch(() => showError('Não foi possível carregar a escola.'))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, showError]);
 
   const validate = () => {
     const next: Errors = {};
@@ -54,23 +60,22 @@ export default function SchoolFormScreen() {
       }
       goBack();
     } catch (error) {
-      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível salvar a escola.'));
+      showError(writeErrorMessage(error, 'Não foi possível salvar a escola.'));
       setSaving(false);
     }
   };
 
   return (
-    <>
-      <OfflineBanner />
+    <Box className="flex-1 bg-background">
       <Stack.Screen options={{ title: isEditing ? 'Editar escola' : 'Nova escola' }} />
+      <OfflineBanner />
 
       {loading ? (
-        <ActivityIndicator className="flex-1 bg-background" />
+        <Center className="flex-1">
+          <Spinner size="large" />
+        </Center>
       ) : (
-        <ScrollView
-          className="flex-1 bg-background"
-          contentContainerClassName="gap-4 p-4"
-          keyboardShouldPersistTaps="handled">
+        <ScrollView className="flex-1" contentContainerClassName="gap-4 p-4" keyboardShouldPersistTaps="handled">
           <FormField
             label="Nome"
             value={name}
@@ -86,7 +91,7 @@ export default function SchoolFormScreen() {
             placeholder="Ex.: Rua das Flores, 120 - Centro"
           />
 
-          <View className="mt-2 flex-row justify-end gap-2">
+          <HStack className="mt-2 justify-end gap-2">
             <Button variant="outline" onPress={() => goBack()} isDisabled={saving}>
               <ButtonText>Cancelar</ButtonText>
             </Button>
@@ -94,9 +99,9 @@ export default function SchoolFormScreen() {
               {saving && <ButtonSpinner />}
               <ButtonText>Salvar</ButtonText>
             </Button>
-          </View>
+          </HStack>
         </ScrollView>
       )}
-    </>
+    </Box>
   );
 }

@@ -1,6 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
-
-import { FieldError, FieldLabel } from '@/components/form-field';
+import { FormFieldError, FormFieldLabel } from '@/components/form-field';
+import { Button, ButtonText } from '@/components/ui/button';
+import { FormControl } from '@/components/ui/form-control';
+import { HStack } from '@/components/ui/hstack';
 
 type Option = { value: string; label: string };
 
@@ -10,35 +11,33 @@ type OptionPickerProps = {
   value: string | undefined;
   onChange: (value: string) => void;
   error?: string;
+  // Mostra a opção selecionada, mas não permite trocar.
   disabled?: boolean;
 };
 
-// Seleção única em formato de "chips", usada para poucas opções (turno, escola).
+// Seleção única em "chips" (botões do gluestack), usada para poucas opções (turno, escola).
 export function OptionPicker({ label, options, value, onChange, error, disabled }: OptionPickerProps) {
   return (
-    <View className="gap-1.5">
-      <FieldLabel label={label} />
-      <View className="flex-row flex-wrap gap-2">
+    <FormControl isRequired isInvalid={Boolean(error)}>
+      <FormFieldLabel label={label} />
+      <HStack className="flex-wrap gap-2">
         {options.map((option) => {
           const selected = option.value === value;
           return (
-            <Pressable
+            <Button
               key={option.value}
-              disabled={disabled}
-              onPress={() => onChange(option.value)}
+              size="sm"
+              variant={selected ? 'default' : 'outline'}
+              className="rounded-full"
+              onPress={disabled ? undefined : () => onChange(option.value)}
               accessibilityRole="radio"
-              accessibilityState={{ selected, disabled }}
-              className={`rounded-full border px-4 py-2 ${
-                selected ? 'border-primary bg-primary' : 'border-input bg-background'
-              } ${disabled && !selected ? 'opacity-40' : ''}`}>
-              <Text className={`text-sm ${selected ? 'text-primary-foreground' : 'text-foreground'}`}>
-                {option.label}
-              </Text>
-            </Pressable>
+              accessibilityState={{ selected, disabled }}>
+              <ButtonText>{option.label}</ButtonText>
+            </Button>
           );
         })}
-      </View>
-      <FieldError error={error} />
-    </View>
+      </HStack>
+      <FormFieldError error={error} />
+    </FormControl>
   );
 }

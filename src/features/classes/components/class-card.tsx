@@ -1,6 +1,10 @@
-import { Pressable, Text, View } from 'react-native';
-
-import { Button, ButtonText } from '@/components/ui/button';
+import { Box } from '@/components/ui/box';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { HStack } from '@/components/ui/hstack';
+import { EditIcon, TrashIcon } from '@/components/ui/icon';
+import { Pressable } from '@/components/ui/pressable';
+import { Text } from '@/components/ui/text';
 
 import { shiftLabel, type SchoolClassWithSchool } from '../types';
 
@@ -14,28 +18,30 @@ type ClassCardProps = {
 
 export function ClassCard({ item, onEdit, onDelete, onOpenSchool }: ClassCardProps) {
   return (
-    <View className="gap-1 rounded-lg border border-border bg-card p-4">
-      <Text className="text-base font-semibold text-foreground">{item.name}</Text>
-      <Text className="text-sm text-muted-foreground">
+    <Box className="gap-1 rounded-lg border border-border bg-card p-4">
+      <Heading size="sm">{item.name}</Heading>
+      <Text size="sm" className="text-muted-foreground">
         {shiftLabel(item.shift)} · Ano letivo {item.year}
       </Text>
 
       {onOpenSchool && (
         <Pressable onPress={onOpenSchool} accessibilityRole="link" hitSlop={8}>
-          <Text className="text-sm font-medium text-foreground underline">
+          <Text size="sm" className="font-medium text-foreground underline">
             {item.school?.name ?? 'Escola não encontrada'} ›
           </Text>
         </Pressable>
       )}
 
-      <View className="mt-2 flex-row justify-end gap-2">
+      <HStack className="mt-2 justify-end gap-2">
         <Button size="sm" variant="outline" onPress={onEdit}>
+          <ButtonIcon as={EditIcon} />
           <ButtonText>Editar</ButtonText>
         </Button>
         <Button size="sm" variant="destructive" onPress={onDelete}>
+          <ButtonIcon as={TrashIcon} />
           <ButtonText>Excluir</ButtonText>
         </Button>
-      </View>
-    </View>
+      </HStack>
+    </Box>
   );
 }

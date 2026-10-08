@@ -1,6 +1,5 @@
-import { useTheme } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, TextInput, View } from 'react-native';
+import { CloseCircleIcon, SearchIcon } from '@/components/ui/icon';
+import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input';
 
 type SearchInputProps = {
   value: string;
@@ -9,39 +8,34 @@ type SearchInputProps = {
 };
 
 export function SearchInput({ value, onChangeText, placeholder }: SearchInputProps) {
-  const { colors } = useTheme();
-
   return (
-    <View className="flex-row items-center gap-2 rounded-md border border-input bg-background px-3">
-      <SymbolView
-        name={{ ios: 'magnifyingglass', android: 'search', web: 'search' }}
-        tintColor={colors.text}
-        size={18}
-      />
-      <TextInput
+    <Input className="h-11">
+      <InputSlot>
+        <InputIcon as={SearchIcon} />
+      </InputSlot>
+      <InputField
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        accessibilityLabel={placeholder}
+        aria-label={placeholder}
         autoCorrect={false}
         autoCapitalize="none"
         returnKeyType="search"
-        className="flex-1 py-2.5 text-base text-foreground"
+        className="text-base"
       />
       {value !== '' && (
-        <Pressable
+        <InputSlot
           onPress={() => onChangeText('')}
           accessibilityRole="button"
           accessibilityLabel="Limpar busca"
-          hitSlop={8}
-          className="active:opacity-60">
-          <SymbolView
-            name={{ ios: 'xmark.circle.fill', android: 'close', web: 'close' }}
-            tintColor={colors.text}
-            size={18}
-          />
-        </Pressable>
+          // O InputSlot do gluestack se esconde dos leitores de tela por padrão (pensado para
+          // ícones decorativos); este é um botão, então precisa ficar acessível.
+          accessibilityElementsHidden={false}
+          tabIndex={0}
+          hitSlop={8}>
+          <InputIcon as={CloseCircleIcon} />
+        </InputSlot>
       )}
-    </View>
+    </Input>
   );
 }

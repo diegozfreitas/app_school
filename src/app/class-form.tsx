@@ -1,15 +1,22 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native';
 
 import { FormField } from '@/components/form-field';
 import { OptionPicker } from '@/components/option-picker';
+import { Box } from '@/components/ui/box';
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
+import { Center } from '@/components/ui/center';
+import { HStack } from '@/components/ui/hstack';
+import { ScrollView } from '@/components/ui/scroll-view';
+import { Spinner } from '@/components/ui/spinner';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
 import { createClass, getClass, updateClass } from '@/features/classes/api';
 import { SHIFTS, type Shift } from '@/features/classes/types';
 import { OfflineBanner } from '@/features/offline/components/offline-banner';
 import { listSchools } from '@/features/schools/api';
 import type { School } from '@/features/schools/types';
+import { useErrorToast } from '@/hooks/use-error-toast';
 import { writeErrorMessage } from '@/lib/api-client';
 import { goBack } from '@/lib/navigation';
 
@@ -30,6 +37,7 @@ export default function ClassFormScreen() {
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const showError = useErrorToast();
 
   useEffect(() => {
     const load = async () => {
@@ -46,13 +54,13 @@ export default function ClassFormScreen() {
           setSchoolId(schoolClass.schoolId);
         }
       } catch {
-        Alert.alert('Erro', 'Não foi possível carregar os dados do formulário.');
+        showError('Não foi possível carregar os dados do formulário.');
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [params.id]);
+  }, [params.id, showError]);
 
   const validate = () => {
     const next: Errors = {};
@@ -80,7 +88,7 @@ export default function ClassFormScreen() {
       }
       goBack();
     } catch (error) {
-      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível salvar a classe.'));
+      showError(writeErrorMessage(error, 'Não foi possível salvar a classe.'));
       setSaving(false);
     }
   };
@@ -90,17 +98,16 @@ export default function ClassFormScreen() {
     .map((school) => ({ value: school.id, label: school.name }));
 
   return (
-    <>
-      <OfflineBanner />
+    <Box className="flex-1 bg-background">
       <Stack.Screen options={{ title: isEditing ? 'Editar classe' : 'Nova classe' }} />
+      <OfflineBanner />
 
       {loading ? (
-        <ActivityIndicator className="flex-1 bg-background" />
+        <Center className="flex-1">
+          <Spinner size="large" />
+        </Center>
       ) : (
-        <ScrollView
-          className="flex-1 bg-background"
-          contentContainerClassName="gap-4 p-4"
-          keyboardShouldPersistTaps="handled">
+        <ScrollView className="flex-1" contentContainerClassName="gap-4 p-4" keyboardShouldPersistTaps="handled">
           <FormField
             label="Nome da classe"
             value={name}
@@ -126,12 +133,14 @@ export default function ClassFormScreen() {
           />
           {isEditing ? (
             // Na edição a escola não muda: só mostra a qual escola a classe pertence.
-            <View className="gap-1.5">
-              <Text className="text-sm font-medium text-foreground">Escola</Text>
-              <Text className="text-base text-muted-foreground">
+            <VStack className="gap-1.5">
+              <Text size="sm" className="font-medium text-foreground">
+                Escola
+              </Text>
+              <Text className="text-muted-foreground">
                 {schools.find((school) => school.id === schoolId)?.name ?? '—'}
               </Text>
-            </View>
+            </VStack>
           ) : schoolOptions.length > 0 ? (
             <OptionPicker
               label="Escola"
@@ -142,12 +151,12 @@ export default function ClassFormScreen() {
               disabled={isSchoolLocked}
             />
           ) : (
-            <Text className="text-sm text-destructive">
+            <Text size="sm" className="text-destructive">
               Cadastre uma escola antes de adicionar classes.
             </Text>
           )}
 
-          <View className="mt-2 flex-row justify-end gap-2">
+          <HStack className="mt-2 justify-end gap-2">
             <Button variant="outline" onPress={() => goBack()} isDisabled={saving}>
               <ButtonText>Cancelar</ButtonText>
             </Button>
@@ -155,9 +164,9 @@ export default function ClassFormScreen() {
               {saving && <ButtonSpinner />}
               <ButtonText>Salvar</ButtonText>
             </Button>
-          </View>
+          </HStack>
         </ScrollView>
       )}
-    </>
+    </Box>
   );
 }

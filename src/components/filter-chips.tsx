@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, Text } from 'react-native';
+import { Button, ButtonText } from '@/components/ui/button';
+import { ScrollView } from '@/components/ui/scroll-view';
 
 type FilterOption<T extends string> = { value: T; label: string };
 
@@ -23,18 +24,16 @@ export function FilterChips<T extends string>({
       {chips.map((chip) => {
         const selected = chip.value === value;
         return (
-          <Pressable
+          <Button
             key={chip.value ?? 'all'}
+            size="sm"
+            variant={selected ? 'default' : 'outline'}
+            className="rounded-full"
             onPress={() => onChange(chip.value)}
             accessibilityRole="radio"
-            accessibilityState={{ selected }}
-            className={`rounded-full border px-4 py-1.5 ${
-              selected ? 'border-primary bg-primary' : 'border-input bg-background'
-            }`}>
-            <Text className={`text-sm ${selected ? 'text-primary-foreground' : 'text-foreground'}`}>
-              {chip.label}
-            </Text>
-          </Pressable>
+            accessibilityState={{ selected }}>
+            <ButtonText>{chip.label}</ButtonText>
+          </Button>
         );
       })}
     </ScrollView>

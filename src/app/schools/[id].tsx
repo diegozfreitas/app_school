@@ -1,16 +1,24 @@
 import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-screens/experimental';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Box } from '@/components/ui/box';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
+import { Center } from '@/components/ui/center';
+import { FlatList } from '@/components/ui/flat-list';
+import { Heading } from '@/components/ui/heading';
+import { AddIcon } from '@/components/ui/icon';
+import { Spinner } from '@/components/ui/spinner';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
 import { deleteClass, listClassesBySchool } from '@/features/classes/api';
 import { ClassCard } from '@/features/classes/components/class-card';
-import { OfflineBanner } from '@/features/offline/components/offline-banner';
 import type { SchoolClass } from '@/features/classes/types';
+import { OfflineBanner } from '@/features/offline/components/offline-banner';
 import { getSchool } from '@/features/schools/api';
 import type { School } from '@/features/schools/types';
+import { useErrorToast } from '@/hooks/use-error-toast';
 import { writeErrorMessage } from '@/lib/api-client';
 
 export default function SchoolDetailScreen() {
@@ -21,6 +29,7 @@ export default function SchoolDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [classToDelete, setClassToDelete] = useState<SchoolClass | null>(null);
+  const showError = useErrorToast();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -49,72 +58,79 @@ export default function SchoolDetailScreen() {
       setClasses((current) => current.filter((item) => item.id !== classToDelete.id));
       setClassToDelete(null);
     } catch (error) {
-      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível excluir a classe.'));
+      showError(writeErrorMessage(error, 'Não foi possível excluir a classe.'));
     }
   };
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-background">
-      <Stack.Screen options={{ title: school?.name ?? 'Escola' }} />
-      <OfflineBanner />
+    <Box className="flex-1 bg-background">
+      <SafeAreaView edges={{ bottom: true }} style={{ flex: 1 }}>
+        <Stack.Screen options={{ title: school?.name ?? 'Escola' }} />
+        <OfflineBanner />
 
-      {loading && !school ? (
-        <ActivityIndicator className="flex-1" />
-      ) : error || !school ? (
-        <View className="flex-1 items-center justify-center gap-4 px-6">
-          <Text className="text-center text-muted-foreground">{error}</Text>
-          <Button variant="outline" onPress={load}>
-            <ButtonText>Tentar novamente</ButtonText>
-          </Button>
-        </View>
-      ) : (
-        <FlatList
-          data={classes}
-          keyExtractor={(item) => item.id}
-          contentContainerClassName="grow gap-3 p-4"
-          refreshing={loading}
-          onRefresh={load}
-          ListHeaderComponent={
-            <View className="gap-1 pb-2">
-              <Text className="text-2xl font-semibold text-foreground">{school.name}</Text>
-              <Text className="text-sm text-muted-foreground">{school.address}</Text>
-              <Text className="pt-3 text-lg font-semibold text-foreground">
-                Classes ({classes.length})
-              </Text>
-            </View>
-          }
-          ListEmptyComponent={
-            <View className="flex-1 items-center justify-center py-8">
-              <Text className="text-muted-foreground">Nenhuma classe cadastrada nesta escola</Text>
-            </View>
-          }
-          renderItem={({ item }) => (
-            <ClassCard
-              item={item}
-              onEdit={() => router.push({ pathname: '/class-form', params: { id: item.id } })}
-              onDelete={() => setClassToDelete(item)}
-            />
-          )}
+        {loading && !school ? (
+          <Center className="flex-1">
+            <Spinner size="large" />
+          </Center>
+        ) : error || !school ? (
+          <Center className="flex-1 gap-4 px-6">
+            <Text className="text-center text-muted-foreground">{error}</Text>
+            <Button variant="outline" onPress={load}>
+              <ButtonText>Tentar novamente</ButtonText>
+            </Button>
+          </Center>
+        ) : (
+          <FlatList
+            data={classes}
+            keyExtractor={(item) => item.id}
+            contentContainerClassName="grow gap-3 p-4"
+            refreshing={loading}
+            onRefresh={load}
+            ListHeaderComponent={
+              <VStack className="gap-1 pb-2">
+                <Heading size="2xl">{school.name}</Heading>
+                <Text size="sm" className="text-muted-foreground">
+                  {school.address}
+                </Text>
+                <Heading size="md" className="pt-3">
+                  Classes ({classes.length})
+                </Heading>
+              </VStack>
+            }
+            ListEmptyComponent={
+              <Center className="flex-1 py-8">
+                <Text className="text-muted-foreground">Nenhuma classe cadastrada nesta escola</Text>
+              </Center>
+            }
+            renderItem={({ item }) => (
+              <ClassCard
+                item={item}
+                onEdit={() => router.push({ pathname: '/class-form', params: { id: item.id } })}
+                onDelete={() => setClassToDelete(item)}
+              />
+            )}
+          />
+        )}
+
+        {school && (
+          <Box className="border-t border-border p-4">
+            <Button
+              size="lg"
+              onPress={() => router.push({ pathname: '/class-form', params: { schoolId: school.id } })}>
+              <ButtonIcon as={AddIcon} />
+              <ButtonText>Adicionar nova classe</ButtonText>
+            </Button>
+          </Box>
+        )}
+
+        <ConfirmDialog
+          isOpen={classToDelete !== null}
+          title="Excluir classe"
+          message={`Excluir a classe "${classToDelete?.name}"?`}
+          onCancel={() => setClassToDelete(null)}
+          onConfirm={handleDelete}
         />
-      )}
-
-      {school && (
-        <View className="border-t border-border p-4">
-          <Button
-            size="lg"
-            onPress={() => router.push({ pathname: '/class-form', params: { schoolId: school.id } })}>
-            <ButtonText>Adicionar nova classe</ButtonText>
-          </Button>
-        </View>
-      )}
-
-      <ConfirmDialog
-        isOpen={classToDelete !== null}
-        title="Excluir classe"
-        message={`Excluir a classe "${classToDelete?.name}"?`}
-        onCancel={() => setClassToDelete(null)}
-        onConfirm={handleDelete}
-      />
-    </SafeAreaView>
+      </SafeAreaView>
+    </Box>
   );
 }

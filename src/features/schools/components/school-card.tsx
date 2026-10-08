@@ -1,6 +1,9 @@
-import { Pressable, Text, View } from 'react-native';
-
-import { Button, ButtonText } from '@/components/ui/button';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { HStack } from '@/components/ui/hstack';
+import { EditIcon, TrashIcon } from '@/components/ui/icon';
+import { Pressable } from '@/components/ui/pressable';
+import { Text } from '@/components/ui/text';
 
 import type { SchoolWithClassesCount } from '../types';
 
@@ -16,20 +19,24 @@ export function SchoolCard({ item, onPress, onEdit, onDelete }: SchoolCardProps)
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      className="gap-1 rounded-lg border border-border bg-card p-4 active:opacity-70">
-      <Text className="text-base font-semibold text-foreground">{item.name}</Text>
-      <Text className="text-sm text-muted-foreground">{item.address}</Text>
-      <Text className="text-sm text-muted-foreground">
+      className="gap-1 rounded-lg border border-border bg-card p-4 data-[active=true]:opacity-70">
+      <Heading size="sm">{item.name}</Heading>
+      <Text size="sm" className="text-muted-foreground">
+        {item.address}
+      </Text>
+      <Text size="sm" className="text-muted-foreground">
         {item.classesCount} {item.classesCount === 1 ? 'classe' : 'classes'} ›
       </Text>
-      <View className="mt-2 flex-row justify-end gap-2">
+      <HStack className="mt-2 justify-end gap-2">
         <Button size="sm" variant="outline" onPress={onEdit}>
+          <ButtonIcon as={EditIcon} />
           <ButtonText>Editar</ButtonText>
         </Button>
         <Button size="sm" variant="destructive" onPress={onDelete}>
+          <ButtonIcon as={TrashIcon} />
           <ButtonText>Excluir</ButtonText>
         </Button>
-      </View>
+      </HStack>
     </Pressable>
   );
 }

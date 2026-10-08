@@ -1,15 +1,23 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Text, View } from 'react-native';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { FilterChips } from '@/components/filter-chips';
 import { SearchInput } from '@/components/search-input';
 import { TabScreen } from '@/components/tab-screen';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Box } from '@/components/ui/box';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
+import { Center } from '@/components/ui/center';
+import { FlatList } from '@/components/ui/flat-list';
+import { Heading } from '@/components/ui/heading';
+import { AddIcon } from '@/components/ui/icon';
+import { Spinner } from '@/components/ui/spinner';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
 import { deleteClass, listClasses } from '@/features/classes/api';
 import { ClassCard } from '@/features/classes/components/class-card';
 import { SHIFTS, type SchoolClassWithSchool, type Shift } from '@/features/classes/types';
+import { useErrorToast } from '@/hooks/use-error-toast';
 import { useSearch } from '@/hooks/use-search';
 import { writeErrorMessage } from '@/lib/api-client';
 
@@ -26,6 +34,7 @@ export default function ClassesScreen() {
     filter: (item) => shift === null || item.shift === shift,
   });
   const isFiltering = hasQuery || shift !== null;
+  const showError = useErrorToast();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -53,31 +62,29 @@ export default function ClassesScreen() {
       setClasses((current) => current.filter((item) => item.id !== classToDelete.id));
       setClassToDelete(null);
     } catch (error) {
-      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível excluir a classe.'));
+      showError(writeErrorMessage(error, 'Não foi possível excluir a classe.'));
     }
   };
 
   return (
     <TabScreen>
-      <Text className="px-4 pb-2 pt-4 text-2xl font-semibold text-foreground">Classes</Text>
-      <View className="gap-2 px-4 pb-1">
-        <SearchInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Buscar por classe ou escola"
-        />
+      <VStack className="gap-2 px-4 pb-1 pt-4">
+        <Heading size="2xl">Classes</Heading>
+        <SearchInput value={query} onChangeText={setQuery} placeholder="Buscar por classe ou escola" />
         <FilterChips options={SHIFTS} value={shift} onChange={setShift} />
-      </View>
+      </VStack>
 
       {loading && classes.length === 0 ? (
-        <ActivityIndicator className="flex-1" />
+        <Center className="flex-1">
+          <Spinner size="large" />
+        </Center>
       ) : error ? (
-        <View className="flex-1 items-center justify-center gap-4 px-6">
+        <Center className="flex-1 gap-4 px-6">
           <Text className="text-center text-muted-foreground">{error}</Text>
           <Button variant="outline" onPress={load}>
             <ButtonText>Tentar novamente</ButtonText>
           </Button>
-        </View>
+        </Center>
       ) : (
         <FlatList
           data={results}
@@ -87,11 +94,11 @@ export default function ClassesScreen() {
           refreshing={loading}
           onRefresh={load}
           ListEmptyComponent={
-            <View className="flex-1 items-center justify-center">
+            <Center className="flex-1">
               <Text className="text-center text-muted-foreground">
                 {isFiltering ? 'Nenhuma classe encontrada com esses filtros' : 'Nenhuma classe cadastrada'}
               </Text>
-            </View>
+            </Center>
           }
           renderItem={({ item }) => (
             <ClassCard
@@ -106,11 +113,12 @@ export default function ClassesScreen() {
         />
       )}
 
-      <View className="border-t border-border p-4">
+      <Box className="border-t border-border p-4">
         <Button size="lg" onPress={() => router.push('/class-form')}>
+          <ButtonIcon as={AddIcon} />
           <ButtonText>Adicionar nova classe</ButtonText>
         </Button>
-      </View>
+      </Box>
 
       <ConfirmDialog
         isOpen={classToDelete !== null}

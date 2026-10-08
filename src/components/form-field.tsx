@@ -1,33 +1,48 @@
-import { Text, TextInput, type TextInputProps, View } from 'react-native';
+import type { ComponentProps } from 'react';
 
-type FormFieldProps = Pick<TextInputProps, 'value' | 'onChangeText' | 'placeholder' | 'keyboardType' | 'maxLength'> & {
+import {
+  FormControl,
+  FormControlError,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
+} from '@/components/ui/form-control';
+import { Input, InputField } from '@/components/ui/input';
+
+type FormFieldProps = Pick<
+  ComponentProps<typeof InputField>,
+  'value' | 'onChangeText' | 'placeholder' | 'keyboardType' | 'maxLength'
+> & {
   label: string;
   error?: string;
 };
 
+// Campo de texto obrigatório: rótulo com "*", input e mensagem de erro (FormControl do gluestack).
 export function FormField({ label, error, ...inputProps }: FormFieldProps) {
   return (
-    <View className="gap-1.5">
-      <FieldLabel label={label} />
-      <TextInput
-        {...inputProps}
-        className={`rounded-md border px-3 py-2.5 text-base text-foreground ${
-          error ? 'border-destructive' : 'border-input'
-        }`}
-      />
-      <FieldError error={error} />
-    </View>
+    <FormControl isRequired isInvalid={Boolean(error)}>
+      <FormFieldLabel label={label} />
+      <Input className="h-11">
+        <InputField {...inputProps} aria-label={label} className="text-base" />
+      </Input>
+      <FormFieldError error={error} />
+    </FormControl>
   );
 }
 
-export function FieldLabel({ label }: { label: string }) {
+// O asterisco de obrigatório é adicionado pelo FormControl (isRequired).
+export function FormFieldLabel({ label }: { label: string }) {
   return (
-    <Text className="text-sm font-medium text-foreground">
-      {label} <Text className="text-destructive">*</Text>
-    </Text>
+    <FormControlLabel>
+      <FormControlLabelText>{label}</FormControlLabelText>
+    </FormControlLabel>
   );
 }
 
-export function FieldError({ error }: { error?: string }) {
-  return error ? <Text className="text-sm text-destructive">{error}</Text> : null;
+export function FormFieldError({ error }: { error?: string }) {
+  return (
+    <FormControlError>
+      <FormControlErrorText className="text-sm">{error}</FormControlErrorText>
+    </FormControlError>
+  );
 }

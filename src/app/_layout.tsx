@@ -1,15 +1,11 @@
 import '@/global.css';
 
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { HeaderBackButton } from '@/components/header-back-button';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -17,7 +13,6 @@ export default function RootLayout() {
     <GluestackUIProvider mode="system">
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <StatusBar style="auto" />
-        <AnimatedSplashOverlay />
         {/* Toda tela fora das abas ganha um "Voltar" que funciona mesmo sem histórico. */}
         <Stack screenOptions={{ headerLeft: () => <HeaderBackButton /> }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

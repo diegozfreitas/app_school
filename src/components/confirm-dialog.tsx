@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Text } from 'react-native';
 
 import {
   AlertDialog,
@@ -10,6 +9,8 @@ import {
   AlertDialogHeader,
 } from '@/components/ui/alert-dialog';
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Text } from '@/components/ui/text';
 
 type ConfirmDialogProps = {
   isOpen: boolean;
@@ -50,10 +51,10 @@ export function ConfirmDialog({
       <AlertDialogBackdrop />
       <AlertDialogContent className="gap-3" testID="confirm-dialog">
         <AlertDialogHeader>
-          <Text className="text-lg font-semibold text-foreground">{content.title}</Text>
+          <Heading size="md">{content.title}</Heading>
         </AlertDialogHeader>
         <AlertDialogBody>
-          <Text className="text-sm text-muted-foreground">{content.message}</Text>
+          <Text size="sm" className="text-muted-foreground">{content.message}</Text>
         </AlertDialogBody>
         <AlertDialogFooter className="mt-2">
           <Button variant="outline" onPress={onCancel} isDisabled={busy}>

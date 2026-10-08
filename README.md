@@ -35,7 +35,8 @@ App mobile (Android, iOS e web) para cadastro de **escolas** e suas **classes**,
 | React | 19.2.3 |
 | TypeScript | 6.0 |
 | Expo Router | 57 (rotas por arquivos em `src/app`) |
-| gluestack-ui | `@gluestack-ui/core` 5.0 + `@gluestack-ui/utils` 5.0 (Button, AlertDialog) |
+| gluestack-ui | `@gluestack-ui/core` 5.0 + `@gluestack-ui/utils` 5.0 — toda a interface usa os componentes da lib (Box, VStack/HStack, Center, Text, Heading, Button, Input, FormControl, Pressable, FlatList, ScrollView, Spinner, Icon, Toast, AlertDialog) |
+| @expo/html-elements | 57 (usado pelo Heading do gluestack) |
 | NativeWind | 5.0.0-preview.4, com `react-native-css` 3 e Tailwind CSS 4 |
 | React Native Reanimated | 4.5.1 |
 | expo-symbols | 57 (ícones) |
