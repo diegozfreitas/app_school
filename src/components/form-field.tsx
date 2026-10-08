@@ -11,7 +11,15 @@ import { Input, InputField } from '@/components/ui/input';
 
 type FormFieldProps = Pick<
   ComponentProps<typeof InputField>,
-  'value' | 'onChangeText' | 'placeholder' | 'keyboardType' | 'maxLength'
+  | 'value'
+  | 'onChangeText'
+  | 'placeholder'
+  | 'keyboardType'
+  | 'maxLength'
+  | 'autoCapitalize'
+  | 'autoComplete'
+  | 'returnKeyType'
+  | 'onSubmitEditing'
 > & {
   label: string;
   error?: string;

@@ -13,7 +13,7 @@ const schoolsMock = jest.mocked(schoolsApi);
 
 describe('Formulário de escola', () => {
   it('exibe os campos e valida os obrigatórios', async () => {
-    await renderApp('/school-form');
+    await renderApp('/schools/form');
 
     expect(await screen.findByText(/Nome/)).toBeOnTheScreen();
     expect(screen.getByText(/Endereço/)).toBeOnTheScreen();
@@ -27,7 +27,7 @@ describe('Formulário de escola', () => {
 
   it('carrega os dados da escola ao editar', async () => {
     schoolsMock.getSchool.mockResolvedValue(schools[0]);
-    await renderApp('/school-form?id=1');
+    await renderApp('/schools/form?id=1');
 
     expect(await screen.findByDisplayValue('Escola Municipal Monteiro Lobato')).toBeOnTheScreen();
     expect(screen.getByDisplayValue('Rua das Flores, 120 - Centro')).toBeOnTheScreen();
@@ -42,7 +42,7 @@ describe('Formulário de classe', () => {
   });
 
   it('exibe os campos, os turnos e as escolas', async () => {
-    await renderApp('/class-form');
+    await renderApp('/classes/form');
 
     expect(await screen.findByText(/Nome da classe/)).toBeOnTheScreen();
     expect(screen.getByText('Manhã')).toBeOnTheScreen();
@@ -53,7 +53,7 @@ describe('Formulário de classe', () => {
   });
 
   it('valida os campos obrigatórios', async () => {
-    await renderApp('/class-form');
+    await renderApp('/classes/form');
 
     await fireEvent.press(await screen.findByText('Salvar'));
 
@@ -64,7 +64,7 @@ describe('Formulário de classe', () => {
   });
 
   it('mostra só a escola de origem quando aberto a partir de uma escola', async () => {
-    await renderApp('/class-form?schoolId=1');
+    await renderApp('/classes/form?schoolId=1');
 
     expect(await screen.findByText('Escola Municipal Monteiro Lobato')).toBeOnTheScreen();
     expect(screen.queryByText('Colégio Estadual Machado de Assis')).not.toBeOnTheScreen();
@@ -72,7 +72,7 @@ describe('Formulário de classe', () => {
 
   it('carrega os dados da classe ao editar', async () => {
     classesMock.getClass.mockResolvedValue(classes[0]);
-    await renderApp('/class-form?id=1');
+    await renderApp('/classes/form?id=1');
 
     expect(await screen.findByDisplayValue('1º Ano A')).toBeOnTheScreen();
     expect(screen.getByDisplayValue('2026')).toBeOnTheScreen();
@@ -80,7 +80,7 @@ describe('Formulário de classe', () => {
 
   it('na edição mostra a escola, mas não permite trocar', async () => {
     classesMock.getClass.mockResolvedValue(classes[0]);
-    await renderApp('/class-form?id=1');
+    await renderApp('/classes/form?id=1');
 
     expect(await screen.findByText('Escola Municipal Monteiro Lobato')).toBeOnTheScreen();
     expect(screen.queryByText('Colégio Estadual Machado de Assis')).not.toBeOnTheScreen();

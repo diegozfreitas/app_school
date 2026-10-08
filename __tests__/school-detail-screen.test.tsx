@@ -41,7 +41,7 @@ describe('Tela da escola', () => {
 
     await fireEvent.press(await screen.findByText('Adicionar nova classe'));
 
-    expect(app).toHavePathnameWithParams('/class-form?schoolId=1');
+    expect(app).toHavePathnameWithParams('/classes/form?schoolId=1');
   });
 
   it('tem botão de voltar mesmo quando a tela foi aberta direto (sem histórico)', async () => {

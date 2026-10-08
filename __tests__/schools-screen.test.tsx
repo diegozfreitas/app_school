@@ -87,7 +87,7 @@ describe('Tela de Escolas', () => {
 
     await fireEvent.press(await screen.findByText('Adicionar nova escola'));
 
-    expect(app).toHavePathname('/school-form');
+    expect(app).toHavePathname('/schools/form');
   });
 
   it('pede confirmação antes de excluir e remove a escola da lista', async () => {

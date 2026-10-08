@@ -4,6 +4,10 @@ App mobile (Android, iOS e web) para cadastro de **escolas** e suas **classes**,
 
 ## Funcionalidades
 
+- **Identificação do gestor (Context API)**
+  - A primeira tela pede o nome de quem está gerenciando. O nome fica num contexto React (`SessionProvider` / `useSession`) e é salvo no aparelho, então não é pedido de novo a cada abertura
+  - As telas do app são rotas protegidas (`Stack.Protected`): sem gestor identificado, só a tela de login fica acessível
+  - O topo das abas mostra "Olá, {nome}" e o botão "Sair", que volta para o login
 - **Escolas**
   - Listar escolas com nome, endereço e número de classes (mensagem quando não há nenhuma)
   - Adicionar escola (nome e endereço obrigatórios)
@@ -149,19 +153,29 @@ npx tsc --noEmit
 ```
 api/db.json                   # banco de dados do back-end mock
 src/
-  app/                        # rotas (Expo Router) — cada arquivo é uma tela
-    _layout.tsx               # Stack raiz, provider do gluestack, botão de voltar
+  app/                        # rotas (Expo Router) — cada arquivo só aponta para a tela da feature
+    _layout.tsx               # providers (sessão, gluestack, tema) e rotas protegidas
+    login.tsx                 # identificação do gestor (/login)
     (tabs)/                   # abas Escolas (index) e Classes
     schools/[id].tsx          # tela da escola com as classes dela
-    school-form.tsx           # modal de cadastro/edição de escola
-    class-form.tsx            # modal de cadastro/edição de classe
-  features/
-    schools/                  # api, tipos e components/school-card.tsx
-    classes/                  # api, tipos e components/class-card.tsx
+    schools/form.tsx          # modal de cadastro/edição de escola (/schools/form)
+    classes/form.tsx          # modal de cadastro/edição de classe (/classes/form)
+  features/                   # regras e interface de cada domínio
+    schools/
+      api.ts, types.ts
+      screens/                # orquestradores das páginas (SchoolsScreen, SchoolDetailsScreen, SchoolFormScreen)
+      hooks/                  # useSchools, useSchoolDetails, useSchoolForm
+      components/             # SchoolList, SchoolCard, SchoolForm, SchoolSummary, DeleteSchoolDialog
+    classes/
+      api.ts, types.ts
+      screens/                # orquestradores das páginas (ClassesScreen, ClassFormScreen)
+      hooks/                  # useClasses, useClassForm
+      components/             # ClassList, ClassCard, ClassForm, ClassFilters, DeleteClassDialog
     offline/                  # cópia offline (offline-db.ts) e faixa "sem conexão"
-  components/                 # componentes compartilhados (formulário, diálogo, voltar, busca)
-    ui/                       # componentes gerados pelo gluestack-ui (button, alert-dialog...)
-  hooks/                      # hooks reutilizáveis (ex.: useSearch)
+    session/                  # SessionProvider/useSession (Context API), LoginScreen, LoginForm, ManagerMenu
+  components/                 # peças genéricas (DataList, FormField, ConfirmDialog, TabScreen...)
+    ui/                       # componentes gerados pelo gluestack-ui (button, input, toast...)
+  hooks/                      # hooks genéricos (useAsyncData, useConfirmDelete, useSearch...)
   lib/                        # cliente HTTP, status de conexão, AsyncStorage e navegação
 __tests__/                    # testes das telas e da camada offline
 test-utils/                   # helpers e dados de exemplo dos testes
