@@ -10,6 +10,7 @@ import { deleteSchool, listSchools } from '@/features/schools/api';
 import { SchoolCard } from '@/features/schools/components/school-card';
 import type { SchoolWithClassesCount } from '@/features/schools/types';
 import { useSearch } from '@/hooks/use-search';
+import { writeErrorMessage } from '@/lib/api-client';
 
 const searchFields = (school: SchoolWithClassesCount) => [school.name, school.address];
 
@@ -45,8 +46,8 @@ export default function SchoolsScreen() {
       await deleteSchool(schoolToDelete.id);
       setSchools((current) => current.filter((item) => item.id !== schoolToDelete.id));
       setSchoolToDelete(null);
-    } catch {
-      Alert.alert('Erro', 'Não foi possível excluir a escola.');
+    } catch (error) {
+      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível excluir a escola.'));
     }
   };
 

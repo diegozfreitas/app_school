@@ -7,9 +7,11 @@ import { ConfirmDialog } from '@/components/confirm-dialog';
 import { Button, ButtonText } from '@/components/ui/button';
 import { deleteClass, listClassesBySchool } from '@/features/classes/api';
 import { ClassCard } from '@/features/classes/components/class-card';
+import { OfflineBanner } from '@/features/offline/components/offline-banner';
 import type { SchoolClass } from '@/features/classes/types';
 import { getSchool } from '@/features/schools/api';
 import type { School } from '@/features/schools/types';
+import { writeErrorMessage } from '@/lib/api-client';
 
 export default function SchoolDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -46,14 +48,15 @@ export default function SchoolDetailScreen() {
       await deleteClass(classToDelete.id);
       setClasses((current) => current.filter((item) => item.id !== classToDelete.id));
       setClassToDelete(null);
-    } catch {
-      Alert.alert('Erro', 'Não foi possível excluir a classe.');
+    } catch (error) {
+      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível excluir a classe.'));
     }
   };
 
   return (
     <SafeAreaView edges={['bottom']} className="flex-1 bg-background">
       <Stack.Screen options={{ title: school?.name ?? 'Escola' }} />
+      <OfflineBanner />
 
       {loading && !school ? (
         <ActivityIndicator className="flex-1" />

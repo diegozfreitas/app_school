@@ -12,3 +12,8 @@ jest.mock('react-native-reanimated', () => ({
 
 // No Jest o jest-expo resolve os arquivos ".native" do worklets, que exigem o módulo nativo.
 jest.mock('react-native-worklets', () => require('react-native-worklets/src/mock'));
+
+// Mock oficial do AsyncStorage (guarda em memória durante o teste).
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);

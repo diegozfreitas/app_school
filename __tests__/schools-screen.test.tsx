@@ -1,6 +1,7 @@
-import { fireEvent, screen, waitFor, within } from 'expo-router/testing-library';
+import { act, fireEvent, screen, waitFor, within } from 'expo-router/testing-library';
 
 import * as schoolsApi from '@/features/schools/api';
+import { setOffline } from '@/lib/connectivity';
 
 import { schoolsWithCount } from '../test-utils/fixtures';
 import { renderApp } from '../test-utils/render-app';
@@ -13,6 +14,10 @@ describe('Tela de Escolas', () => {
     api.listSchools.mockResolvedValue(schoolsWithCount);
   });
 
+  afterEach(async () => {
+    await act(async () => setOffline(false));
+  });
+
   it('lista as escolas com nome, endereço e número de classes', async () => {
     await renderApp('/');
 
@@ -21,6 +26,14 @@ describe('Tela de Escolas', () => {
     expect(screen.getByText(/2 classes/)).toBeOnTheScreen();
     expect(screen.getByText(/1 classe\b/)).toBeOnTheScreen();
     expect(screen.getByText('Adicionar nova escola')).toBeOnTheScreen();
+  });
+
+  it('mostra o aviso de modo offline quando a API está inacessível', async () => {
+    setOffline(true);
+    await renderApp('/');
+
+    expect(await screen.findByText('Escola Municipal Monteiro Lobato')).toBeOnTheScreen();
+    expect(screen.getByText(/Sem conexão. Exibindo os últimos dados salvos/)).toBeOnTheScreen();
   });
 
   it('mostra mensagem quando não há escolas', async () => {

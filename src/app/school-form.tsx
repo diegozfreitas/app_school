@@ -5,6 +5,8 @@ import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { FormField } from '@/components/form-field';
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
 import { createSchool, getSchool, updateSchool } from '@/features/schools/api';
+import { OfflineBanner } from '@/features/offline/components/offline-banner';
+import { writeErrorMessage } from '@/lib/api-client';
 import { goBack } from '@/lib/navigation';
 
 type Field = 'name' | 'address';
@@ -51,14 +53,15 @@ export default function SchoolFormScreen() {
         await createSchool(input);
       }
       goBack();
-    } catch {
-      Alert.alert('Erro', 'Não foi possível salvar a escola.');
+    } catch (error) {
+      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível salvar a escola.'));
       setSaving(false);
     }
   };
 
   return (
     <>
+      <OfflineBanner />
       <Stack.Screen options={{ title: isEditing ? 'Editar escola' : 'Nova escola' }} />
 
       {loading ? (

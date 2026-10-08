@@ -11,6 +11,7 @@ import { deleteClass, listClasses } from '@/features/classes/api';
 import { ClassCard } from '@/features/classes/components/class-card';
 import { SHIFTS, type SchoolClassWithSchool, type Shift } from '@/features/classes/types';
 import { useSearch } from '@/hooks/use-search';
+import { writeErrorMessage } from '@/lib/api-client';
 
 const searchFields = (item: SchoolClassWithSchool) => [item.name, item.school?.name];
 
@@ -51,8 +52,8 @@ export default function ClassesScreen() {
       await deleteClass(classToDelete.id);
       setClasses((current) => current.filter((item) => item.id !== classToDelete.id));
       setClassToDelete(null);
-    } catch {
-      Alert.alert('Erro', 'Não foi possível excluir a classe.');
+    } catch (error) {
+      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível excluir a classe.'));
     }
   };
 

@@ -7,8 +7,10 @@ import { OptionPicker } from '@/components/option-picker';
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
 import { createClass, getClass, updateClass } from '@/features/classes/api';
 import { SHIFTS, type Shift } from '@/features/classes/types';
+import { OfflineBanner } from '@/features/offline/components/offline-banner';
 import { listSchools } from '@/features/schools/api';
 import type { School } from '@/features/schools/types';
+import { writeErrorMessage } from '@/lib/api-client';
 import { goBack } from '@/lib/navigation';
 
 type Field = 'name' | 'shift' | 'year' | 'schoolId';
@@ -77,8 +79,8 @@ export default function ClassFormScreen() {
         await createClass(input);
       }
       goBack();
-    } catch {
-      Alert.alert('Erro', 'Não foi possível salvar a classe.');
+    } catch (error) {
+      Alert.alert('Erro', writeErrorMessage(error, 'Não foi possível salvar a classe.'));
       setSaving(false);
     }
   };
@@ -89,6 +91,7 @@ export default function ClassFormScreen() {
 
   return (
     <>
+      <OfflineBanner />
       <Stack.Screen options={{ title: isEditing ? 'Editar classe' : 'Nova classe' }} />
 
       {loading ? (

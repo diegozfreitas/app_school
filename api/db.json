@@ -6,11 +6,6 @@
       "address": "Rua das Flores, 120 - Centro"
     },
     {
-      "id": "2",
-      "name": "Colégio Estadual Machado de Assis",
-      "address": "Av. Brasil, 1500 - Jardim América"
-    },
-    {
       "name": "Educacao do Saber",
       "address": "Rua nove 09 - centro - Cidade",
       "id": "CEVCxHk1kl4"
@@ -28,13 +23,6 @@
       "id": "2",
       "schoolId": "1",
       "name": "2º Ano B",
-      "shift": "afternoon",
-      "year": 2026
-    },
-    {
-      "id": "3",
-      "schoolId": "2",
-      "name": "9º Ano A",
       "shift": "afternoon",
       "year": 2026
     },

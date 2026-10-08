@@ -18,6 +18,11 @@ App mobile (Android, iOS e web) para cadastro de **escolas** e suas **classes**,
   - Escolas: busca por nome ou endereço
   - Classes: busca pelo nome da classe ou da escola + filtro por turno
   - A busca ignora acentos e maiúsculas ("colegio" encontra "Colégio")
+- **Navegação offline (AsyncStorage)**
+  - Toda resposta da API atualiza uma cópia local de escolas e classes no aparelho
+  - Sem conexão (ou com a API fora do ar), as telas usam essa cópia: listas, busca, tela da escola com suas classes e os formulários de edição. Uma faixa avisa que os dados são os últimos salvos
+  - Salvar e excluir exigem conexão. Offline o app avisa em vez de falhar sem explicação
+  - A conexão volta sozinha na próxima requisição (ao voltar para a tela ou puxar a lista para atualizar)
 
 ## Versões utilizadas
 
@@ -34,6 +39,7 @@ App mobile (Android, iOS e web) para cadastro de **escolas** e suas **classes**,
 | NativeWind | 5.0.0-preview.4, com `react-native-css` 3 e Tailwind CSS 4 |
 | React Native Reanimated | 4.5.1 |
 | expo-symbols | 57 (ícones) |
+| AsyncStorage | `@react-native-async-storage/async-storage` 2.2 (cópia offline) |
 | json-server | 1.0.0-beta.15 (back-end mock) |
 | Jest / jest-expo | 29.7 / 57 |
 | React Native Testing Library | 14.0 |
@@ -151,10 +157,12 @@ src/
   features/
     schools/                  # api, tipos e components/school-card.tsx
     classes/                  # api, tipos e components/class-card.tsx
-  components/                 # componentes compartilhados (formulário, diálogo, voltar)
+    offline/                  # cópia offline (offline-db.ts) e faixa "sem conexão"
+  components/                 # componentes compartilhados (formulário, diálogo, voltar, busca)
     ui/                       # componentes gerados pelo gluestack-ui (button, alert-dialog...)
-  lib/                        # cliente HTTP e helpers de navegação
-__tests__/                    # testes das telas
+  hooks/                      # hooks reutilizáveis (ex.: useSearch)
+  lib/                        # cliente HTTP, status de conexão, AsyncStorage e navegação
+__tests__/                    # testes das telas e da camada offline
 test-utils/                   # helpers e dados de exemplo dos testes
 ```
 
