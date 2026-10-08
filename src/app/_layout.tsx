@@ -7,8 +7,8 @@ import { useColorScheme } from 'react-native';
 
 import { HeaderBackButton } from '@/components/header-back-button';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { SessionProvider, useSession } from '@/contexts/session-context';
 import { SplashScreenController } from '@/features/session/components/splash-screen-controller';
-import { SessionProvider, useSession } from '@/features/session/session-context';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

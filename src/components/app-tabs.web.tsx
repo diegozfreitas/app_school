@@ -45,7 +45,7 @@ function CustomTabList({ children, ...props }: ComponentProps<typeof Box>) {
     <Box {...props} className="absolute w-full flex-row justify-center p-3">
       <HStack className="w-full max-w-200 items-center gap-2 rounded-xl bg-muted px-5 py-2">
         <Heading size="sm" className="mr-auto">
-          AppSchool
+          App School
         </Heading>
         {children}
       </HStack>

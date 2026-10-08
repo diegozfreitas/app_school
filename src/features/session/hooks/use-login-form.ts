@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useSession } from '../session-context';
+import { useSession } from '@/contexts/session-context';
 
 const MIN_NAME_LENGTH = 2;
 

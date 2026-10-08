@@ -172,7 +172,8 @@ src/
       hooks/                  # useClasses, useClassForm
       components/             # ClassList, ClassCard, ClassForm, ClassFilters, DeleteClassDialog
     offline/                  # cópia offline (offline-db.ts) e faixa "sem conexão"
-    session/                  # SessionProvider/useSession (Context API), LoginScreen, LoginForm, ManagerMenu
+    session/                  # LoginScreen, LoginForm, ManagerMenu
+  contexts/                   # estado global via Context API (session-context: gestor logado)
   components/                 # peças genéricas (DataList, FormField, ConfirmDialog, TabScreen...)
     ui/                       # componentes gerados pelo gluestack-ui (button, input, toast...)
   hooks/                      # hooks genéricos (useAsyncData, useConfirmDelete, useSearch...)
